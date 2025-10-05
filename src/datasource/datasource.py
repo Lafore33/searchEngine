@@ -11,6 +11,7 @@ class DataSource:
     def __init__(self, embedder: Embedder):
         self.url = os.getenv("URL")
         self.api_key = os.getenv("API_KEY")
+        self.model_key = "code"
         self.client = AsyncQdrantClient(url=self.url, api_key=self.api_key, timeout=60)
         self.embedder = embedder
 
@@ -30,7 +31,7 @@ class DataSource:
                 PointStruct(
                     id=str(uuid.uuid4()),
                     vector=await self.embedder.embed(code),
-                    payload={"code": code}
+                    payload={self.model_key: code}
                 )
             ]
         )
@@ -42,7 +43,7 @@ class DataSource:
                 PointStruct(
                     id=str(uuid.uuid4()),
                     vector=await self.embedder.embed(chunk),
-                    payload={"content": chunk}
+                    payload={self.model_key: chunk}
                 ) for chunk in chunks
             ]
         )
@@ -54,4 +55,4 @@ class DataSource:
             query=await self.embedder.embed(query)
         )
 
-        return [point.payload["code"] for point in vectors.points]
+        return [point.payload[self.model_key] for point in vectors.points]
