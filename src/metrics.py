@@ -8,7 +8,7 @@ def recall_at_k(ground_truth: list[str], search_results: list[list[str]], k=10) 
     relevant_answers = [1 for idx, gt in enumerate(ground_truth) if gt in search_results[idx][:k]]
     return np.mean(relevant_answers)
 
-def mrr_at_k(ground_truth: list[str], search_results: list[list[str]], k=10):
+def mrr_at_k(ground_truth: list[str], search_results: list[list[str]], k=10) -> floating[Any]:
     relevant_rankings = []
     for idx, gt in enumerate(ground_truth):
         if gt in search_results[idx][:k]:
@@ -17,7 +17,7 @@ def mrr_at_k(ground_truth: list[str], search_results: list[list[str]], k=10):
             relevant_rankings.append(0)
     return np.mean(relevant_rankings)
 
-def ndcg_at_k(ground_truth: list[str], search_results: list[list[str]], k=10):
+def ndcg_at_k(ground_truth: list[str], search_results: list[list[str]], k=10) -> floating[Any]:
     scores = []
     for idx, gt in enumerate(ground_truth):
         if gt in search_results[idx][:k]:
