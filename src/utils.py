@@ -1,6 +1,6 @@
-from src.datasource.datasource import DataSource
+from src.datasource.base import DataSource
+from src.datasource.dense import DenseDatasource
 from src.embedder.embedder import Embedder
-from src.parser.parser import DocParser
 from datasets import Dataset
 from src.metrics import recall_at_k, mrr_at_k, ndcg_at_k
 from torch import nn
@@ -53,7 +53,7 @@ def tune_model(model: Embedder, loss: nn.Module,
 
 async def evaluate_model(model: Embedder, collection_name: str,
                          test_queries: list[str], test_corpus: list[str], rerank=False) -> None:
-    db = DataSource(model)
+    db = DenseDatasource(model)
     predictions, gt = await test_search(db, collection_name, test_queries, test_corpus, rerank)
     print(recall_at_k(gt, predictions))
     print(mrr_at_k(gt, predictions))
