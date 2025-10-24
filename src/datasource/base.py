@@ -5,11 +5,13 @@ from transformers import AutoTokenizer, AutoModelForSequenceClassification
 import torch
 import os
 from qdrant_client import AsyncQdrantClient
+
+from src.embedder.sparse import SparseEmbedder
 from src.parser.parser import DocParser
 
 class DataSource(ABC):
 
-    def __init__(self, embedder: Embedder) -> None:
+    def __init__(self, embedder: Embedder | SparseEmbedder) -> None:
         self.embedder = embedder
         self.reranker_name = "zeroentropy/zerank-1-small"
         self.url = os.getenv("URL")
