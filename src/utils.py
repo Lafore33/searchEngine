@@ -1,8 +1,8 @@
+from torch import nn
+from datasets import Dataset
 from src.datasource.base import DataSource
 from src.embedder.embedder import Embedder
-from datasets import Dataset
 from src.metrics import recall_at_k, mrr_at_k, ndcg_at_k
-from torch import nn
 
 # here I am assuming the file will contain the code as in the dataset, so I do not chunk it,
 # however the chunk class is implemented and can be used in other cases
