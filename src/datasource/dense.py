@@ -1,11 +1,8 @@
-import os
 import uuid
 from typing import override
 
 from src.datasource.base import DataSource
-from src.parser.parser import DocParser
 from src.embedder.embedder import Embedder
-from qdrant_client import AsyncQdrantClient
 from qdrant_client import models
 from qdrant_client.models import PointStruct
 
