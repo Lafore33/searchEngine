@@ -12,15 +12,16 @@ from src.embedder.sparse import SparseEmbedder
 
 class SparseDatasource(DataSource):
 
-    def __init__(self, embedder: SparseEmbedder):
-        super().__init__(embedder)
+    def __init__(self, sparse: SparseEmbedder):
+        super().__init__()
+        self.sparse = sparse
 
     @override
     async def create_collection(self, collection_name: str):
         await self.client.create_collection(
             collection_name,
             sparse_vectors_config={
-                "text": models.SparseVectorParams(
+                "sparse": models.SparseVectorParams(
                     modifier=models.Modifier.IDF,
                 ),
             },
@@ -28,17 +29,14 @@ class SparseDatasource(DataSource):
 
     @override
     async def upsert_chunk(self, collection_name:str, code: str):
-        embedding = (await self.embedder.embed(code))[0].as_object()
+        embedding = (await self.sparse.embed(code))[0].as_object()
         await self.client.upsert(
             collection_name=collection_name,
             points=[
                 PointStruct(
                     id=str(uuid.uuid4()),
                     vector={
-                        "text": models.SparseVector(
-                            indices=embedding["indices"],
-                            values=embedding["values"]
-                        ),
+                        "sparse": models.SparseVector(**embedding),
                     },
                     payload={self.model_key: code}
                 )
@@ -47,7 +45,7 @@ class SparseDatasource(DataSource):
 
     @override
     async def upsert_chunks(self, collection_name:str, chunks: list[str]):
-        embeddings = await asyncio.gather(*[self.embedder.embed(chunk) for chunk in chunks])
+        embeddings = await asyncio.gather(*[self.sparse.embed(chunk) for chunk in chunks])
         embeddings = [embedding.as_object() for embedding in embeddings]
         await self.client.upsert(
             collection_name=collection_name,
@@ -55,26 +53,20 @@ class SparseDatasource(DataSource):
                 PointStruct(
                     id=str(uuid.uuid4()),
                     vector={
-                        "text": models.SparseVector(
-                            indices=embedding["indices"],
-                            values=embedding["values"]
-                        ),
+                        "sparse": models.SparseVector(**embedding),
                     },
-                    payload={self.model_key: embedding}
-                ) for embedding in embeddings
+                    payload={self.model_key: chunk}
+                ) for embedding, chunk in zip(embeddings, chunks)
             ]
         )
 
     @override
     async def search_functions(self, collection_name: str, query: str) -> list[str]:
-        embedding = (await self.embedder.embed(query))[0].as_object()
+        embedding = (await self.sparse.embed(query))[0].as_object()
         vectors = await self.client.query_points(
             collection_name=collection_name,
-            query=SparseVector(
-                indices=embedding["indices"],
-                values=embedding["values"]
-            ),
-            using="text",
+            query=SparseVector(**embedding),
+            using="sparse",
         )
 
         return [point.payload[self.model_key] for point in vectors.points]

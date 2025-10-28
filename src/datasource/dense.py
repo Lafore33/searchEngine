@@ -10,7 +10,8 @@ from qdrant_client.models import PointStruct
 class DenseDatasource(DataSource):
 
     def __init__(self, embedder: Embedder):
-        super().__init__(embedder)
+        super().__init__()
+        self.embedder = embedder
 
     @override
     async def create_collection(self, collection_name: str):
