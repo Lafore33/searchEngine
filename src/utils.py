@@ -4,9 +4,6 @@ from src.datasource.base import DataSource
 from src.embedder.embedder import Embedder
 from src.metrics import recall_at_k, mrr_at_k, ndcg_at_k
 
-# here I am assuming the file will contain the code as in the dataset, so I do not chunk it,
-# however the chunk class is implemented and can be used in other cases
-
 async def load_code_to_db(db: DataSource, collection_name: str, corpus: dict[str, list[str]]) -> None:
     if not await db.client.collection_exists(collection_name):
         await db.create_collection(collection_name)

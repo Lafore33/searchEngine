@@ -3,7 +3,6 @@ from transformers import AutoTokenizer, AutoModelForSequenceClassification
 import torch
 import os
 from qdrant_client import AsyncQdrantClient
-from src.parser.parser import DocParser
 
 class DataSource(ABC):
 
@@ -16,15 +15,6 @@ class DataSource(ABC):
 
     @abstractmethod
     async def create_collection(self, collection_name: str): ...
-
-    async def load_doc_to_db(self, collection_name: str, filename: str) -> None:
-        if not await self.client.collection_exists(collection_name):
-            await self.create_collection(collection_name)
-
-        parser = DocParser()
-
-        content = parser.parse_to_string(filename)
-        await self.upsert_chunk(collection_name, content)
 
     @abstractmethod
     async def upsert_chunk(self, collection_name: str, code: str): ...

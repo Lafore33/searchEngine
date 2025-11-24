@@ -2,30 +2,28 @@
 
 ## Project structure
 ```
-├── src
-│   ├── chunker                    
-│   │   ├── chunker.py              
-│   │
+├── src            
 │   ├── datasource
-│   │   ├── datasource.py  
+│   │   ├── base.py  
+│   │   ├── dense.py 
+│   │   ├── hybrid.py
+│   │   ├── sparse.py   
 │   │
 │   ├── embedder
 │   │   ├── embedder.py
+│   │   ├── sparse.py
 │   │
-│   ├── parser
-│   │   ├── parser.py
-│   │
+│   ├── notebooks
+│   │   ├── hybrid_retrieval.ipynb
+│   │   ├── sparse_retrieval.ipynb
+│   │   ├── training.ipynb
 │   ├── metrics.py
-│   ├── training.ipynb
 │   ├── utils.py
 ```
 
 ### Descriptions
 
-Chunker and Parser are kind of unnecessary here, as neither Chunker nor Parser are used, however they are added for potential parsing and splitting the documents.
-In this particular case, I have not split the functions code, as they are small, and then there will be a need for interaction techniques or some like that. And it might worsen the quality of the response.
-
-Datasource class represents the vector storage. For vector storage I decided to use Qdrant.
+Datasource class represents the vector storage. For vector storage I decided to use Qdrant. I have created a cluster, which is hosted in the cloud. I use parameters provided in the .env-example to connect to the cluster.
 Embedder is used for transformers. Two transformers were used: MiniLM and Qwen. MiniLM was finetuned and Qwen was used as an additional comparison between MiniLM's
 
 Metrics file contains implementations of the required metrics, utils contains helper functions I've used. 
@@ -43,9 +41,6 @@ As the plot shows, metrics were improved after tuning. For retrieval, I've used 
 Also, the rerank here could be a good idea.
 Regarding the "How do the metrics change when you apply the model to function names instead of whole bodies?",
 I have not tried this, however, in such a case, it'd be highly dependent on the quality of function naming, which may cause issues.
-
-
-
 
 ### Feedback
 First of all — thank you for creating this internship task. It was interesting and gave me a good challenge. I appreciate the effort that went into putting it together. Working on it allowed me to learn a lot and explore different approaches.
