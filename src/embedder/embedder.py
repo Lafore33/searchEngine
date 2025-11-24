@@ -6,9 +6,6 @@ from sentence_transformers.training_args import SentenceTransformerTrainingArgum
 from transformers import TrainerCallback
 from torch import nn
 import matplotlib.pyplot as plt
-from typing import Callable
-
-LossFunction = Callable[[SentenceTransformer], "SentenceTransformerLoss"]
 
 TUNED_MODEL_PATH = "./tuned/finetuned"
 BATCH_SIZE = 16
