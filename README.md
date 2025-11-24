@@ -41,10 +41,3 @@ As the plot shows, metrics were improved after tuning. For retrieval, I've used 
 Also, the rerank here could be a good idea.
 Regarding the "How do the metrics change when you apply the model to function names instead of whole bodies?",
 I have not tried this, however, in such a case, it'd be highly dependent on the quality of function naming, which may cause issues.
-
-### Feedback
-First of all — thank you for creating this internship task. It was interesting and gave me a good challenge. I appreciate the effort that went into putting it together. Working on it allowed me to learn a lot and explore different approaches.
-I understand that there is still much work to be done to bring the project to its full potential, but I hope my submission reflects both my skills and my enthusiasm for the subject. I am eager to receive your feedback.
-This opportunity means a great deal to me, and I am genuinely passionate about contributing to your work. I look forward to the possibility of growing and learning with your team.
-Thank you again for your time, effort, and consideration.
-
