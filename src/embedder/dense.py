@@ -10,7 +10,7 @@ TUNED_MODEL_PATH = "./tuned/finetuned"
 BATCH_SIZE = 16
 
 
-class Embedder:
+class DenseEmbedder:
     def __init__(self, model_name: str, embedding_size: int, load_tuned=False):
         self.embedding_size = embedding_size
         self.model_name = model_name

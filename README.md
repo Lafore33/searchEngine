@@ -10,7 +10,7 @@
 │   │   ├── sparse.py   
 │   │
 │   ├── embedder
-│   │   ├── embedder.py
+│   │   ├── dense.py
 │   │   ├── sparse.py
 │   │
 │   ├── notebooks

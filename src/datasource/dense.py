@@ -1,14 +1,14 @@
 import uuid
 from typing import override
 from qdrant_client import models
-from src.embedder.dense import Embedder
+from src.embedder.dense import DenseEmbedder
 from src.datasource.base import DataSource
 from qdrant_client.models import PointStruct
 
 
 class DenseDatasource(DataSource):
 
-    def __init__(self, embedder: Embedder):
+    def __init__(self, embedder: DenseEmbedder):
         super().__init__()
         self.embedder = embedder
 

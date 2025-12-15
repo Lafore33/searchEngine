@@ -3,7 +3,7 @@ from typing import Any
 from numpy import floating
 from datasets import Dataset
 from transformers import Trainer
-from src.embedder.dense import Embedder
+from src.embedder.dense import DenseEmbedder
 from src.datasource.base import DataSource
 from src.metrics import recall_at_k, mrr_at_k, ndcg_at_k
 
@@ -31,7 +31,7 @@ def test_search(db: DataSource, collection_name: str,
 
     return predictions, gt
 
-def train(model: Embedder, loss: nn.Module,
+def train(model: DenseEmbedder, loss: nn.Module,
           default_dataset: Dataset, corpus_dataset: Dataset,
           queries_dataset: Dataset, epochs: int) -> Trainer:
 

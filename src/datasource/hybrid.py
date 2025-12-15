@@ -1,7 +1,7 @@
 import uuid
 from typing import override
 from qdrant_client import models
-from src.embedder.dense import Embedder
+from src.embedder.dense import DenseEmbedder
 from src.datasource.base import DataSource
 from qdrant_client.models import PointStruct
 from src.embedder.sparse import SparseEmbedder
@@ -9,7 +9,7 @@ from src.embedder.sparse import SparseEmbedder
 
 class HybridDatasource(DataSource):
 
-    def __init__(self, sparse_embedder: SparseEmbedder, dense_embedder: Embedder):
+    def __init__(self, sparse_embedder: SparseEmbedder, dense_embedder: DenseEmbedder):
         super().__init__()
         self.sparse_embedder = sparse_embedder
         self.dense_embedder = dense_embedder
