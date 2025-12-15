@@ -1,9 +1,8 @@
 import uuid
 from typing import override
-
-from src.datasource.base import DataSource
-from src.embedder.dense import Embedder
 from qdrant_client import models
+from src.embedder.dense import Embedder
+from src.datasource.base import DataSource
 from qdrant_client.models import PointStruct
 
 

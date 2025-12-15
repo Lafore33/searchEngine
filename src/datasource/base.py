@@ -1,14 +1,12 @@
 from abc import ABC, abstractmethod
-import os
 from qdrant_client import QdrantClient
+
 
 class DataSource(ABC):
 
     def __init__(self) -> None:
-        self.url = os.getenv("URL")
-        self.api_key = os.getenv("API_KEY")
         self.model_key = "corpus"
-        self.client = QdrantClient(url=self.url, api_key=self.api_key, timeout=60)
+        self.client = QdrantClient(":memory:")
 
     @abstractmethod
     def create_collection(self, collection_name: str): ...

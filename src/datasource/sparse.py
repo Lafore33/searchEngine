@@ -1,12 +1,10 @@
 import uuid
 from typing import override
-
-from qdrant_client.http.models import SparseVector
-
-from src.datasource.base import DataSource
 from qdrant_client import models
+from src.datasource.base import DataSource
 from qdrant_client.models import PointStruct
 from src.embedder.sparse import SparseEmbedder
+from qdrant_client.http.models import SparseVector
 
 
 class SparseDatasource(DataSource):

@@ -1,20 +1,18 @@
 import uuid
 from typing import override
-
-from src.datasource.base import DataSource
 from qdrant_client import models
-from qdrant_client.models import PointStruct
-
 from src.embedder.dense import Embedder
+from src.datasource.base import DataSource
+from qdrant_client.models import PointStruct
 from src.embedder.sparse import SparseEmbedder
 
 
 class HybridDatasource(DataSource):
 
-    def __init__(self, sparse: SparseEmbedder, dense: Embedder):
+    def __init__(self, sparse_embedder: SparseEmbedder, dense_embedder: Embedder):
         super().__init__()
-        self.sparse = sparse
-        self.dense = dense
+        self.sparse_embedder = sparse_embedder
+        self.dense_embedder = dense_embedder
 
     @override
     def create_collection(self, collection_name: str):
@@ -22,7 +20,7 @@ class HybridDatasource(DataSource):
             collection_name,
             vectors_config={
                 "dense" : models.VectorParams(
-                            size=self.dense.embedding_size,
+                            size=self.dense_embedder.embedding_size,
                             distance=models.Distance.COSINE
                 )
             },
@@ -35,8 +33,8 @@ class HybridDatasource(DataSource):
 
     @override
     def upsert_chunk(self, collection_name:str, code: str):
-        sparse_embedding = self.sparse.embed(code)[0].as_object()
-        dense_embedding = self.dense.embed(code)
+        sparse_embedding = self.sparse_embedder.embed(code)[0].as_object()
+        dense_embedding = self.dense_embedder.embed(code)
 
         self.client.upsert(
             collection_name=collection_name,
@@ -54,8 +52,8 @@ class HybridDatasource(DataSource):
 
     @override
     def search_functions(self, collection_name: str, query: str) -> list[str]:
-        sparse_embedding = self.sparse.embed(query)[0].as_object()
-        dense_embedding = self.dense.embed(query)
+        sparse_embedding = self.sparse_embedder.embed(query)[0].as_object()
+        dense_embedding = self.dense_embedder.embed(query)
 
         vectors = self.client.query_points(
             collection_name=collection_name,
