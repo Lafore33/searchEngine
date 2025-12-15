@@ -4,34 +4,32 @@ from src.datasource.base import DataSource
 from src.embedder.embedder import Embedder
 from src.metrics import recall_at_k, mrr_at_k, ndcg_at_k
 
-async def load_code_to_db(db: DataSource, collection_name: str, corpus: dict[str, list[str]]) -> None:
-    if not await db.client.collection_exists(collection_name):
-        await db.create_collection(collection_name)
+def load_code_to_db(db: DataSource, collection_name: str, corpus: dict[str, list[str]]) -> None:
+    if not db.client.collection_exists(collection_name):
+        db.create_collection(collection_name)
 
     for function in corpus["text"]:
-        await db.upsert_chunk(collection_name, function)
+        db.upsert_chunk(collection_name, function)
 
-async def load_test_data(db: DataSource, collection_name: str,
+def load_test_data(db: DataSource, collection_name: str,
                          corpus: list[str], force: bool) -> None:
 
-    if (await db.client.collection_exists(collection_name)) and force:
-        await db.client.delete_collection(collection_name)
+    if (db.client.collection_exists(collection_name)) and force:
+        db.client.delete_collection(collection_name)
 
-    if not await db.client.collection_exists(collection_name):
-        await db.create_collection(collection_name)
+    if not db.client.collection_exists(collection_name):
+        db.create_collection(collection_name)
 
     for function in corpus:
-        await db.upsert_chunk(collection_name, function)
+        db.upsert_chunk(collection_name, function)
 
-async def test_search(db: DataSource, collection_name: str,
-                      queries: list[str], corpus: list[str], rerank=False):
+def test_search(db: DataSource, collection_name: str,
+                      queries: list[str], corpus: list[str]):
 
     predictions = []
     gt = []
     for query, function in zip(queries, corpus):
-        result = await db.search_functions(collection_name, query)
-        if rerank:
-            result = db.rerank_with_zerank(query, result)
+        result = db.search_functions(collection_name, query)
         predictions.append(result)
         gt.append(function)
 
@@ -47,9 +45,9 @@ def tune_model(model: Embedder, loss: nn.Module,
 
     model.finetune(loss, train_corpus, train_queries, epochs=epochs, show_plot=show_plot)
 
-async def evaluate_model(db: DataSource, collection_name: str,
-                         test_queries: list[str], test_corpus: list[str], rerank=False) -> None:
-    predictions, gt = await test_search(db, collection_name, test_queries, test_corpus, rerank)
+def evaluate_model(db: DataSource, collection_name: str,
+                         test_queries: list[str], test_corpus: list[str]) -> None:
+    predictions, gt = test_search(db, collection_name, test_queries, test_corpus)
     print(recall_at_k(gt, predictions))
     print(mrr_at_k(gt, predictions))
     print(ndcg_at_k(gt, predictions))

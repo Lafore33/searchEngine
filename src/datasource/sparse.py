@@ -6,7 +6,6 @@ from qdrant_client.http.models import SparseVector
 from src.datasource.base import DataSource
 from qdrant_client import models
 from qdrant_client.models import PointStruct
-import asyncio
 from src.embedder.sparse import SparseEmbedder
 
 
@@ -17,8 +16,8 @@ class SparseDatasource(DataSource):
         self.sparse = sparse
 
     @override
-    async def create_collection(self, collection_name: str):
-        await self.client.create_collection(
+    def create_collection(self, collection_name: str):
+        self.client.create_collection(
             collection_name,
             sparse_vectors_config={
                 "sparse": models.SparseVectorParams(
@@ -28,9 +27,9 @@ class SparseDatasource(DataSource):
         )
 
     @override
-    async def upsert_chunk(self, collection_name:str, code: str):
-        embedding = (await self.sparse.embed(code))[0].as_object()
-        await self.client.upsert(
+    def upsert_chunk(self, collection_name:str, code: str):
+        embedding = (self.sparse.embed(code))[0].as_object()
+        self.client.upsert(
             collection_name=collection_name,
             points=[
                 PointStruct(
@@ -45,9 +44,9 @@ class SparseDatasource(DataSource):
 
     @override
     async def upsert_chunks(self, collection_name:str, chunks: list[str]):
-        embeddings = await asyncio.gather(*[self.sparse.embed(chunk) for chunk in chunks])
+        embeddings = [self.sparse.embed(chunk) for chunk in chunks]
         embeddings = [embedding.as_object() for embedding in embeddings]
-        await self.client.upsert(
+        self.client.upsert(
             collection_name=collection_name,
             points=[
                 PointStruct(
@@ -61,9 +60,9 @@ class SparseDatasource(DataSource):
         )
 
     @override
-    async def search_functions(self, collection_name: str, query: str) -> list[str]:
-        embedding = (await self.sparse.embed(query))[0].as_object()
-        vectors = await self.client.query_points(
+    def search_functions(self, collection_name: str, query: str) -> list[str]:
+        embedding = (self.sparse.embed(query))[0].as_object()
+        vectors = self.client.query_points(
             collection_name=collection_name,
             query=SparseVector(**embedding),
             using="sparse",

@@ -4,7 +4,6 @@ from typing import override
 from src.datasource.base import DataSource
 from qdrant_client import models
 from qdrant_client.models import PointStruct
-import asyncio
 
 from src.embedder.embedder import Embedder
 from src.embedder.sparse import SparseEmbedder
@@ -18,8 +17,8 @@ class HybridDatasource(DataSource):
         self.dense = dense
 
     @override
-    async def create_collection(self, collection_name: str):
-        await self.client.create_collection(
+    def create_collection(self, collection_name: str):
+        self.client.create_collection(
             collection_name,
             vectors_config={
                 "dense" : models.VectorParams(
@@ -35,11 +34,11 @@ class HybridDatasource(DataSource):
         )
 
     @override
-    async def upsert_chunk(self, collection_name:str, code: str):
-        sparse_embedding = (await self.sparse.embed(code))[0].as_object()
-        dense_embedding = await self.dense.embed(code)
+    def upsert_chunk(self, collection_name:str, code: str):
+        sparse_embedding = (self.sparse.embed(code))[0].as_object()
+        dense_embedding = self.dense.embed(code)
 
-        await self.client.upsert(
+        self.client.upsert(
             collection_name=collection_name,
             points=[
                 PointStruct(
@@ -54,14 +53,14 @@ class HybridDatasource(DataSource):
         )
 
     @override
-    async def upsert_chunks(self, collection_name:str, chunks: list[str]):
-        sparse_embeddings = await asyncio.gather(*[self.sparse.embed(chunk) for chunk in chunks])
+    def upsert_chunks(self, collection_name:str, chunks: list[str]):
+        sparse_embeddings = [self.sparse.embed(chunk) for chunk in chunks]
         sparse_embeddings = [embedding.as_object() for embedding in sparse_embeddings]
 
-        dense_embeddings = await asyncio.gather(*[self.dense.embed(chunk) for chunk in chunks])
+        dense_embeddings = [self.dense.embed(chunk) for chunk in chunks]
         dense_embeddings = [embedding.as_object() for embedding in dense_embeddings]
 
-        await self.client.upsert(
+        self.client.upsert(
             collection_name=collection_name,
             points=[
                 PointStruct(
@@ -76,11 +75,11 @@ class HybridDatasource(DataSource):
         )
 
     @override
-    async def search_functions(self, collection_name: str, query: str) -> list[str]:
-        sparse_embedding = (await self.sparse.embed(query))[0].as_object()
-        dense_embedding = await self.dense.embed(query)
+    def search_functions(self, collection_name: str, query: str) -> list[str]:
+        sparse_embedding = (self.sparse.embed(query))[0].as_object()
+        dense_embedding = self.dense.embed(query)
 
-        vectors = await self.client.query_points(
+        vectors = self.client.query_points(
             collection_name=collection_name,
             prefetch=[
                 models.Prefetch(

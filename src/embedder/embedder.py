@@ -20,7 +20,7 @@ class Embedder:
             else SentenceTransformer(TUNED_MODEL_PATH)
         )
 
-    async def embed(self, query: str) -> list[float] | np.ndarray:
+    def embed(self, query: str) -> list[float] | np.ndarray:
         return self.model.encode(query).tolist()
 
     def finetune(self, loss: nn.Module, train_corpus: list[str], train_query: list[str],
