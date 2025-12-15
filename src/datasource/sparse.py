@@ -28,7 +28,7 @@ class SparseDatasource(DataSource):
 
     @override
     def upsert_chunk(self, collection_name:str, code: str):
-        embedding = (self.sparse.embed(code))[0].as_object()
+        embedding = self.sparse.embed(code)[0].as_object()
         self.client.upsert(
             collection_name=collection_name,
             points=[
@@ -43,25 +43,8 @@ class SparseDatasource(DataSource):
         )
 
     @override
-    async def upsert_chunks(self, collection_name:str, chunks: list[str]):
-        embeddings = [self.sparse.embed(chunk) for chunk in chunks]
-        embeddings = [embedding.as_object() for embedding in embeddings]
-        self.client.upsert(
-            collection_name=collection_name,
-            points=[
-                PointStruct(
-                    id=str(uuid.uuid4()),
-                    vector={
-                        "sparse": models.SparseVector(**embedding),
-                    },
-                    payload={self.model_key: chunk}
-                ) for embedding, chunk in zip(embeddings, chunks)
-            ]
-        )
-
-    @override
     def search_functions(self, collection_name: str, query: str) -> list[str]:
-        embedding = (self.sparse.embed(query))[0].as_object()
+        embedding = self.sparse.embed(query)[0].as_object()
         vectors = self.client.query_points(
             collection_name=collection_name,
             query=SparseVector(**embedding),

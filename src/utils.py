@@ -1,7 +1,7 @@
 from torch import nn
 from datasets import Dataset
 from src.datasource.base import DataSource
-from src.embedder.embedder import Embedder
+from src.embedder.dense import Embedder
 from src.metrics import recall_at_k, mrr_at_k, ndcg_at_k
 
 def load_code_to_db(db: DataSource, collection_name: str, corpus: dict[str, list[str]]) -> None:

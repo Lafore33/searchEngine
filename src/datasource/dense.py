@@ -2,7 +2,7 @@ import uuid
 from typing import override
 
 from src.datasource.base import DataSource
-from src.embedder.embedder import Embedder
+from src.embedder.dense import Embedder
 from qdrant_client import models
 from qdrant_client.models import PointStruct
 
@@ -33,19 +33,6 @@ class DenseDatasource(DataSource):
                     vector=self.embedder.embed(code),
                     payload={self.model_key: code}
                 )
-            ]
-        )
-
-    @override
-    def upsert_chunks(self, collection_name:str, chunks: list[str]):
-        self.client.upsert(
-            collection_name=collection_name,
-            points=[
-                PointStruct(
-                    id=str(uuid.uuid4()),
-                    vector=self.embedder.embed(chunk),
-                    payload={self.model_key: chunk}
-                ) for chunk in chunks
             ]
         )
 
