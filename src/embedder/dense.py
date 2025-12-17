@@ -1,12 +1,19 @@
+import os
 import numpy as np
 from torch import nn
+from pathlib import Path
 from datasets import Dataset
+from dotenv import load_dotenv
 from transformers import Trainer
 from sentence_transformers import SentenceTransformer
 from sentence_transformers.trainer import SentenceTransformerTrainer
 from sentence_transformers.training_args import SentenceTransformerTrainingArguments
 
-TUNED_MODEL_PATH = "./tuned/finetuned"
+load_dotenv()
+
+ROOT_DIR = Path(__file__).resolve().parents[2]
+TUNED_MODEL_PATH = str(ROOT_DIR / os.getenv('TUNED_PATH'))
+
 BATCH_SIZE = 16
 
 
