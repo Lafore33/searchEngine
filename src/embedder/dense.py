@@ -12,7 +12,7 @@ from sentence_transformers.training_args import SentenceTransformerTrainingArgum
 load_dotenv()
 
 ROOT_DIR = Path(__file__).resolve().parents[2]
-TUNED_MODEL_PATH = str(ROOT_DIR / os.getenv('TUNED_PATH'))
+TUNED_MODEL_PATH = ROOT_DIR / os.getenv('TUNED_PATH')
 
 BATCH_SIZE = 16
 
@@ -22,10 +22,11 @@ class DenseEmbedder:
         self.embedding_size = embedding_size
         self.model_name = model_name
         self.is_tuned = load_tuned
+        TUNED_MODEL_PATH.mkdir(parents=True, exist_ok=True)
         self.model = (
-            SentenceTransformer(model_name)
-            if not load_tuned
-            else SentenceTransformer(TUNED_MODEL_PATH)
+            SentenceTransformer(str(TUNED_MODEL_PATH))
+            if load_tuned and any(TUNED_MODEL_PATH.iterdir())
+            else SentenceTransformer(model_name)
         )
 
     def embed(self, query: str) -> list[float] | np.ndarray:
@@ -38,7 +39,7 @@ class DenseEmbedder:
         train_dataset = Dataset.from_dict(train_examples)
 
         args = SentenceTransformerTrainingArguments(
-            output_dir=TUNED_MODEL_PATH,
+            output_dir=str(TUNED_MODEL_PATH),
             num_train_epochs=epochs,
             per_device_train_batch_size=BATCH_SIZE,
         )
@@ -51,6 +52,6 @@ class DenseEmbedder:
         )
 
         trainer.train()
-        self.model.save(TUNED_MODEL_PATH)
+        self.model.save(str(TUNED_MODEL_PATH))
 
         return trainer
