@@ -14,16 +14,18 @@
 │   │   ├── sparse.py
 │   │
 │   ├── notebooks
+│   │   ├── dense_retrieval.ipynb
 │   │   ├── hybrid_retrieval.ipynb
 │   │   ├── sparse_retrieval.ipynb
-│   │   ├── training.ipynb
+│   ├
+│   ├── api.py
 │   ├── metrics.py
 │   ├── utils.py
 ```
 
 ### Descriptions
 
-Datasource class represents the vector storage. For vector storage I decided to use Qdrant. I have created a cluster, which is hosted in the cloud. I use parameters provided in the .env-example to connect to the cluster.
+Datasource class represents the vector storage. For vector storage I decided to use Qdrant in memory. The path in the .env-example is needed to save trained models.
 Embedder is used for transformers. Two transformers were used: MiniLM and Qwen. MiniLM was finetuned and Qwen was used as an additional comparison between MiniLM's
 
 Metrics file contains implementations of the required metrics, utils contains helper functions I've used. 
