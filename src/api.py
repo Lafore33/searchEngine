@@ -10,8 +10,6 @@ corpus_dataset = load_dataset("CoIR-Retrieval/cosqa", "corpus")["corpus"]
 test_corpus = [function for partition, function in zip(corpus_dataset["partition"], corpus_dataset["text"]) if
                partition == "test"]
 
-
-
 models = [
           DenseEmbedder("Qwen/Qwen3-Embedding-0.6B", 1024),
           DenseEmbedder("sentence-transformers/all-MiniLM-L6-v2", 384),

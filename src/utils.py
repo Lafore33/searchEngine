@@ -3,8 +3,8 @@ from typing import Any
 from numpy import floating
 from datasets import Dataset
 from transformers import Trainer
-from src.embedder.dense import DenseEmbedder
 from src.datasource.base import DataSource
+from src.embedder.dense import DenseEmbedder
 from src.metrics import recall_at_k, mrr_at_k, ndcg_at_k
 
 def load_test_data(db: DataSource, collection_name: str,
