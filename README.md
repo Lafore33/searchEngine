@@ -34,7 +34,7 @@ The notebook contains tuning, displays the plot and metrics, as well as differen
 
 I have also implemented simple inference with one endpoint: /search. There is also a dockerfile for a containerisation of the application, as well as the docker-image.yml workflow file for GitHub actions. The purpose of this workflow is to rebuild image each time the code is pushed to the main branch, it can be triggered manually as well.
 
-To run the application you need to pull the container from the GitHub actions, and run it passing the environment variable TUNED_PATH:
+To run the application you need to pull the container from the GitHub, and run it passing the environment variable TUNED_PATH:
 ```
 docker run -p 8000:8000 -e TUNED_PATH=/models ghcr.io/lafore33/search-engine
 ```
